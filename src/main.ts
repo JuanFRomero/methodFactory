@@ -6,6 +6,7 @@ import { TruckLogistics } from "./truck-logistic";
 import { BikeLogistic } from "./bike-logistic";
 import { SeaLogistics } from "./sea-logistic";
 import { VanLogistics } from "./van-logistic";
+import { PlaneLogistics } from "./flight-logistic";
 import {
     DeliveryType,
     TransportType,
@@ -23,8 +24,12 @@ function parseDeliveryType(value: string): DeliveryType {
         return "sea";
     }
 
+    if (normalizedValue === "flight") {
+        return "flight";
+    }
+
     throw new Error(
-        "Tipo de entrega no válido. Debes escribir 'road' o 'sea'."
+        "Tipo de entrega no válido. Debes escribir 'road', 'sea' o 'flight'."
     );
 }
 
@@ -39,12 +44,16 @@ function parseTransportType(value: string): TransportType {
         return "bike";
     }
 
-        if (normalizedValue === "van") {
+    if (normalizedValue === "van") {
         return "van";
     }
 
     if (normalizedValue === "ship") {
         return "ship";
+    }
+
+    if (normalizedValue === "plane") {
+        return "plane";
     }
 
     throw new Error(
@@ -104,6 +113,13 @@ function createLogistics(
         return new SeaLogistics();
     }
 
+    if (
+        deliveryType === "flight" &&
+        transportType === "plane"
+    ) {
+        return new PlaneLogistics();
+    }
+
     throw new Error(
         `Combinación no válida: entrega '${deliveryType}' con transporte '${transportType}'.`
     );
@@ -124,11 +140,11 @@ async function main(): Promise<void> {
 
     try {
         const deliveryInput = await readline.question(
-            "¿Qué tipo de entrega quieres usar? road/sea: "
+            "¿Qué tipo de entrega quieres usar? road/sea/flight: "
         );
 
         const transportInput = await readline.question(
-            "¿Qué tipo de transporte quieres usar? truck/ship: "
+            "¿Qué tipo de transporte quieres usar? truck/bike/van/ship/plane: "
         );
 
         const timeInput = await readline.question(
