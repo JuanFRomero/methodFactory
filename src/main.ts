@@ -2,8 +2,10 @@ import { createInterface } from "readline/promises";
 import { stdin as input, stdout as output } from "process";
 
 import { Logistics } from "./logistics";
-import { RoadLogistics } from "./road-logistic";
+import { TruckLogistics } from "./truck-logistic";
+import { BikeLogistic } from "./bike-logistic";
 import { SeaLogistics } from "./sea-logistic";
+import { VanLogistics } from "./van-logistic";
 import {
     DeliveryType,
     TransportType,
@@ -33,12 +35,20 @@ function parseTransportType(value: string): TransportType {
         return "truck";
     }
 
+    if (normalizedValue === "bike") {
+        return "bike";
+    }
+
+        if (normalizedValue === "van") {
+        return "van";
+    }
+
     if (normalizedValue === "ship") {
         return "ship";
     }
 
     throw new Error(
-        "Tipo de transporte no válido. Debes escribir 'truck' o 'ship'."
+        "Tipo de transporte no válido."
     );
 }
 
@@ -70,7 +80,21 @@ function createLogistics(
         deliveryType === "road" &&
         transportType === "truck"
     ) {
-        return new RoadLogistics();
+        return new TruckLogistics();
+    }
+
+    if (
+        deliveryType === "road" &&
+        transportType === "bike"
+    ) {
+        return new BikeLogistic();
+    }
+
+    if (
+        deliveryType === "road" &&
+        transportType === "van"
+    ) {
+        return new VanLogistics();
     }
 
     if (
