@@ -1,10 +1,20 @@
 import { Transport } from "./transport";
-import { TimeType } from "./types";
+import { DeliveryStrategy } from "./steategy/delivery-strategy";
 
 export abstract class Logistics {
-    public abstract createTransport(): Transport;
+    constructor(
+        private deliveryStrategy: DeliveryStrategy
+    ){}
 
-    public planDelivery(timeType: TimeType , transport: Transport = this.createTransport() ): string {
-        return `Planificando entrega de tipo ${timeType}: ${transport.deliver()}`;
+    public abstract createTransport() : Transport;
+
+    public setDeliveryStrategy( 
+        deliveryStrategy: DeliveryStrategy 
+    ): void {
+        this.deliveryStrategy = deliveryStrategy;
     }
+
+    public planDelivery( transport: Transport = this.createTransport() ): string {
+        return this.deliveryStrategy.execute(transport)
+    } 
 }
