@@ -12,6 +12,11 @@ import { TransportFragileDecorator } from "./decorator/fragile-decorator";
 import { TrackingTransportDecorator } from "./decorator/tracking-transport-decorator";
 import { InsuredTransportDecorator } from "./decorator/Insured-transport-decorator";
 import { RefrigeratedTransportDecorator } from "./decorator/refrigerated-transport-decorator";
+import { DeliveryStrategy } from "./steategy/delivery-strategy";
+import { NormalDeliveryStrategy } from "./steategy/normal-delivery-strategy";
+import { ExpressDeliveryStrategy } from "./steategy/express-delivery-strategy";
+
+
 import {
     DeliveryType,
     TransportType,
@@ -83,50 +88,16 @@ function parseTimeType(value: string): TimeType {
     );
 }
 
-function parseFragileOption(value: string): boolean{
-    const normalizeValue = value.trim().toLocaleLowerCase();
-    
-    if(normalizeValue == "yes" || 
-        normalizeValue == "y"
+function parseYesOrNotOption( value: string, optionName: string ): boolean{
+    const normalizedValue = value.trim().toLocaleLowerCase();
+
+    if(normalizedValue == "yes" || 
+        normalizedValue == "y"
     ){
         return true;
     }
-    if( normalizeValue == "no" ||
-        normalizeValue == "n" 
-    ){
-        return false;
-    }
-
-    throw new Error ("Opción no valida, debes escribir 'yes' o 'no'");
-}
-
-function parseInsuredOption(value: string): boolean{
-    const normalizeValue = value.trim().toLocaleLowerCase();
-    
-    if(normalizeValue == "yes" || 
-        normalizeValue == "y"
-    ){
-        return true;
-    }
-    if( normalizeValue == "no" ||
-        normalizeValue == "n" 
-    ){
-        return false;
-    }
-
-    throw new Error ("Opción no valida, debes escribir 'yes' o 'no'");
-}
-
-function parseRefrigeratedOption(value: string): boolean{
-    const normalizeValue = value.trim().toLocaleLowerCase();
-    
-    if(normalizeValue == "yes" || 
-        normalizeValue == "y"
-    ){
-        return true;
-    }
-    if( normalizeValue == "no" ||
-        normalizeValue == "n" 
+    if( normalizedValue == "no" ||
+        normalizedValue == "n" 
     ){
         return false;
     }
@@ -136,41 +107,42 @@ function parseRefrigeratedOption(value: string): boolean{
 
 function createLogistics(
     deliveryType: DeliveryType,
-    transportType: TransportType
+    transportType: TransportType,
+    deliveryStrategy: DeliveryStrategy
 ): Logistics {
     if (
         deliveryType === "road" &&
         transportType === "truck"
     ) {
-        return new TruckLogistics();
+        return new TruckLogistics(deliveryStrategy);
     }
 
     if (
         deliveryType === "road" &&
         transportType === "bike"
     ) {
-        return new BikeLogistic();
+        return new BikeLogistic(deliveryStrategy);
     }
 
     if (
         deliveryType === "road" &&
         transportType === "van"
     ) {
-        return new VanLogistics();
+        return new VanLogistics(deliveryStrategy);
     }
 
     if (
         deliveryType === "sea" &&
         transportType === "ship"
     ) {
-        return new SeaLogistics();
+        return new SeaLogistics(deliveryStrategy);
     }
 
     if (
         deliveryType === "flight" &&
         transportType === "plane"
     ) {
-        return new PlaneLogistics();
+        return new PlaneLogistics(deliveryStrategy);
     }
 
     throw new Error(
@@ -180,10 +152,25 @@ function createLogistics(
 
 function clientCode(
     logistics: Logistics,
-    timeType: TimeType,
     transport: Transport
 ): void {
-    console.log(logistics.planDelivery(timeType, transport));
+    console.log(logistics.planDelivery( transport));
+}
+
+function createDeliveryStrategy( 
+    timeType : TimeType
+ ): DeliveryStrategy{
+    if(timeType == "normal"){
+        return new NormalDeliveryStrategy();
+    }
+    if(timeType == "express"){
+        return new ExpressDeliveryStrategy();
+    }
+
+        throw new Error(
+        `No existe una estrategia para el tipo '${timeType}'.`
+    );
+
 }
 
 async function main(): Promise<void> {
@@ -220,13 +207,15 @@ async function main(): Promise<void> {
         const deliveryType = parseDeliveryType(deliveryInput);
         const transportType = parseTransportType(transportInput);
         const timeType = parseTimeType(timeInput);
-        const isFragile = parseFragileOption(fragileInput);
-        const isInsured = parseInsuredOption(InsuredInput);
-        const isRefrigerated = parseRefrigeratedOption(refrigeratedInput)
+        const isFragile = parseYesOrNotOption(fragileInput , "mercancia fragil");
+        const isInsured = parseYesOrNotOption(InsuredInput, "mercancia asegurada");
+        const isRefrigerated = parseYesOrNotOption(refrigeratedInput, "mercancia refrigerada");
+        const deliveryStrategy = createDeliveryStrategy(timeType);
 
         const logistics = createLogistics(
             deliveryType,
-            transportType
+            transportType,
+            deliveryStrategy
         );
 
         let transport: Transport = logistics.createTransport();
@@ -244,7 +233,7 @@ async function main(): Promise<void> {
 
         transport = new TrackingTransportDecorator(transport);
 
-        clientCode(logistics, timeType, transport);
+        clientCode(logistics, transport);
         
     } catch (error: unknown) {
         if (error instanceof Error) {
