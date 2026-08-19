@@ -7,6 +7,6 @@ export class TransportFragileDecorator extends TransportDecorator {
     }
 
     public deliver(): string {
-        return `${this.transport.deliver()}` + "manipulación especial, moviliza mercancia frágil"
+        return `${this.transport.deliver()} con manipulación especial, moviliza mercancia frágil`
     }
 }

@@ -20,9 +20,15 @@ export interface DeliveryRequest {
     timeType: TimeType;
     fragile: boolean;
     insured: boolean;
+    refrigerated: boolean;
 }
 
-export interface DeliveryResponse {
-    success: boolean;
-    result: string;
-}
+export type DeliveryResponse = 
+    | {
+        success: true;
+        result: string;
+    }
+    | {
+        success: false;
+        error: string;
+    };

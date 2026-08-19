@@ -7,7 +7,7 @@ class TransportFragileDecorator extends transport_decorator_1.TransportDecorator
         super(transport);
     }
     deliver() {
-        return `${this.transport.deliver()}` + "manipulación especial, moviliza mercancia frágil";
+        return `${this.transport.deliver()} con manipulación especial, moviliza mercancia frágil`;
     }
 }
 exports.TransportFragileDecorator = TransportFragileDecorator;

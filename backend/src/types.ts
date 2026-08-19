@@ -17,4 +17,5 @@ export type TimeType =
 export type TransportFeature =
     | "fragile"
     | "tracking"
-    | "insured";
+    | "insured"
+    | "refrigerated";

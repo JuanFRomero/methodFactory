@@ -1,4 +1,6 @@
 # .gitignore
 node_modules/
-.vscode/
+dist/
 .DS_Store
+.env
+.vscode/

@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",
-  "scripts": {
+"scripts": {
     "dev": "tsx src/server/server.ts",
+    "console": "tsx src/main.ts",
     "build": "tsc",
-    "start": "node dist/main.js"
-  },
+    "start": "node dist/server/server.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

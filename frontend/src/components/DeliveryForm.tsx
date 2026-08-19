@@ -13,6 +13,7 @@ export function DeliveryForm({ onSubmit, loading } : DeliveryFromProps ){
     const [ timeType ,setTimeType ] = useState<TimeType>("normal");
     const [ fragile, setFragile ] = useState(false);
     const [ insured , setInsured ] = useState(false);
+    const [ refrigerated , setRefrigerated ] = useState(false);
 
     function handleSubmit( event : React.FormEvent<HTMLFormElement> ) : void {
         event.preventDefault();
@@ -23,6 +24,7 @@ export function DeliveryForm({ onSubmit, loading } : DeliveryFromProps ){
             timeType,
             fragile,
             insured,
+            refrigerated
 
         }
 
@@ -133,6 +135,19 @@ export function DeliveryForm({ onSubmit, loading } : DeliveryFromProps ){
 
                 Seguro
             </label>
+
+            <label>
+                <input
+                    type="checkbox"
+                    checked={refrigerated}
+                    onChange={(event) =>
+                        setRefrigerated( event.target.checked )
+                    }
+                />
+
+                Refrigeración
+            </label>
+
 
 
             <button type="submit" disabled={loading} >

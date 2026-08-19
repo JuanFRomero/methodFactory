@@ -12,6 +12,7 @@ import {
     TransportType,
     TimeType
 } from "../types";
+import { RefrigeratedTransportDecorator } from "../decorator/refrigerated-transport-decorator";
 
 const app = express();
 
@@ -31,7 +32,8 @@ app.post("/api/delivery" , (req , res)=>{
             transportType,
             timeType,
             fragile,
-            insured
+            insured,
+            refrigerated
 
         } = req.body;
 
@@ -40,7 +42,8 @@ app.post("/api/delivery" , (req , res)=>{
             !transportType ||
             !timeType ||
             typeof fragile !== "boolean" ||
-            typeof insured !== "boolean"
+            typeof insured !== "boolean"||
+            typeof refrigerated !== "boolean"
         ) {
             return res.status(400).json({
                 success: false,
@@ -67,6 +70,11 @@ app.post("/api/delivery" , (req , res)=>{
         if(insured){
             transport = new InsuredTransportDecorator(transport);
         }
+
+        if(refrigerated){
+            transport = new RefrigeratedTransportDecorator(transport);
+        }
+
 
         transport = new TrackingTransportDecorator(transport);
 

@@ -11,14 +11,19 @@ export async function createDelivery( delivery: DeliveryRequest): Promise<Delive
         },
         body: JSON.stringify(delivery)
     });
+    
+    const data : DeliveryResponse = await response.json();
 
-    if(!response.ok){
-        
+    if (!response.ok) {
+
+        if (!data.success) {
+            throw new Error(data.error);
+        }
+
         throw new Error(
-            "No se pudo crear la entrega"
+            `Error HTTP: ${response.status}`
         );
     }
-    const data : DeliveryResponse = await response.json();
 
     return data;
 }
