@@ -1,10 +1,10 @@
 import type { DeliveryRequest, DeliveryResponse } from "../types/delivery";
 
-const API_URL = "http://localhost:3000/api/delivery";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export async function createDelivery( delivery: DeliveryRequest): Promise<DeliveryResponse> {
     
-    const response = await fetch(API_URL , {
+    const response = await fetch(`${API_URL}/api/delivery` , {
         method: "POST",
         headers: {
              "Content-Type": "application/json"

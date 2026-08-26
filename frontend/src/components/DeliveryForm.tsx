@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-
 import type { DeliveryRequest , DeliveryType , TransportType , TimeType } from "../types/delivery";
+import { transportsByDeliveryType , deliveryTypes , timeTypes } from "../config/delivery-options";
+
 
 interface DeliveryFromProps { onSubmit : ( delivery : DeliveryRequest ) => void;
     loading : boolean;
@@ -14,6 +15,18 @@ export function DeliveryForm({ onSubmit, loading } : DeliveryFromProps ){
     const [ fragile, setFragile ] = useState(false);
     const [ insured , setInsured ] = useState(false);
     const [ refrigerated , setRefrigerated ] = useState(false);
+
+    const availableTransports = transportsByDeliveryType[deliveryType];
+
+    function handleDeliveryTypeChange( newDeliveryType: DeliveryType ): void {
+    setDeliveryType(newDeliveryType);
+
+    const firstAvailableTransport = transportsByDeliveryType[ newDeliveryType ][0];
+
+    setTransportType(
+        firstAvailableTransport
+    );
+}
 
     function handleSubmit( event : React.FormEvent<HTMLFormElement> ) : void {
         event.preventDefault();
@@ -39,57 +52,31 @@ export function DeliveryForm({ onSubmit, loading } : DeliveryFromProps ){
             <div>
                 <label>Tipo de entrega</label>
 
-                <select
-                    value={deliveryType}
-                    onChange={(event) =>
-                        setDeliveryType(
+                <select value={deliveryType} onChange={(event) =>
+                        handleDeliveryTypeChange(
                             event.target.value as DeliveryType
                         )
-                    }
-                >
-                    <option value="road">
-                        Road
-                    </option>
-
-                    <option value="sea">
-                        Sea
-                    </option>
-
-                    <option value="flight">
-                        Flight
-                    </option>
+                    } >
+                   {deliveryTypes.map((type) => (
+                        <option key={type} value={type}>
+                            {type}
+                        </option>
+                    ))}
                 </select>
             </div>
 
             <div>
                 <label>Transporte</label>
 
-                <select
-                    value={transportType}
-                    onChange={(event) =>
+                <select value={transportType} onChange={(event) =>
                         setTransportType( event.target.value as TransportType
                         )
-                    }
-                >
-                    <option value="truck">
-                        Truck
-                    </option>
-
-                    <option value="bike">
-                        Bike
-                    </option>
-
-                    <option value="van">
-                        Van
-                    </option>
-
-                    <option value="ship">
-                        Ship
-                    </option>
-
-                    <option value="plane">
-                        Plane
-                    </option>
+                    } >
+                    {availableTransports.map((transport) => (
+                        <option key={transport} value={transport}>
+                            {transport}
+                        </option>
+                    ))}
                 </select>
             </div>
 
@@ -102,13 +89,11 @@ export function DeliveryForm({ onSubmit, loading } : DeliveryFromProps ){
                         setTimeType( event.target.value  as TimeType )
                     }
                 >
-                    <option value="normal">
-                        Normal
-                    </option>
-
-                    <option value="express">
-                        Express
-                    </option>
+                   {timeTypes.map((time) => (
+                        <option key={time} value={time}>
+                            {time}
+                        </option>
+                    ))}
                 </select>
             </div>
 

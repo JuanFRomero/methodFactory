@@ -26,6 +26,7 @@ app.get("/api/test" , (req , rest ) => {
 });
 
 app.post("/api/delivery" , (req , res)=>{
+    console.log("req",req.body);
     try {
         const {
             deliveryType,
